@@ -1,8 +1,6 @@
 package ru.yandex.practicum;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /*
 этот класс содержит в себе список слов List<String>
@@ -12,9 +10,12 @@ import java.util.Random;
 public class WordleDictionary {
     private final Random random = new Random();
     private final List<String> words;
+    private final WordleLogger logger;
 
-    public WordleDictionary(List<String> wordsInput)  {
+    public WordleDictionary(List<String> wordsInput,WordleLogger logger)  {
+        this.logger = logger;
         words = selectWordsForGame(wordsInput);
+        logger.log("-------------Словарь отфильтрован-----------");
     }
 
     private static List<String> selectWordsForGame(List<String> inputWords)   {
@@ -34,16 +35,39 @@ public class WordleDictionary {
     }
 
     public String getRandomWord(){
-        if(words.isEmpty()){
-            throw new IndexOutOfBoundsException("словарь пуст");
-        }
-        return words.get(random.nextInt(words.size()));
+       String randomWord = words.get(random.nextInt(words.size()));
+       logger.log("Выбрано случайное слово: " + randomWord);
+       return randomWord;
     }
     public boolean contains(String word){
-        return words.contains(word.toLowerCase().replace('ё','е'));
+        boolean result = words.contains(word.toLowerCase().replace('ё','е'));
+        logger.log("Проверка слова "+ word+" в словаре:"+ result);
+        return result;
     }
     public int size(){
         return words.size();
+    }
+
+    public List<String> getAllWords(){
+        return new ArrayList<>(words);
+    }
+
+    public String findWord(WordleGameConstraints constraints, Set<String> excludeWords){
+        logger.log("Поиск слова по ограничениям, исключено слов:" + excludeWords.size());
+        List<String> matchingWords = new ArrayList<>();
+
+        for (String word: words){
+            if(constraints.matches(word) && !excludeWords.contains(word)){
+                matchingWords.add(word);
+            }
+        }
+        logger.log("Найдено подходящих слов:" + matchingWords.size());
+        if (matchingWords.isEmpty()){
+            return null;
+        }
+        String result = matchingWords.get(random.nextInt(matchingWords.size()));
+        logger.log("Выбрано слово:" + result);
+        return result;
     }
 }
 
