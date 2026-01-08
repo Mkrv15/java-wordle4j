@@ -1,31 +1,15 @@
 package ru.yandex.practicum;
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.util.*;
 
-
-/*
-в этом классе хранится словарь и состояние игры
-    текущий шаг
-    всё что пользователь вводил
-    правильный ответ
-
-в этом классе нужны методы, которые
-    проанализируют совпадение слова с ответом
-    предложат слово-подсказку с учётом всего, что вводил пользователь ранее
-
-не забудьте про специальные типы исключений для игровых и неигровых ошибок
- */
 public class WordleGame {
-
 
     private final String answer;
     private final WordleDictionary dictionary;
     private final WordleGameRound gameRound;
     private final WordleLogger logger;
 
-    public WordleGame(WordleDictionary dictionary,WordleLogger logger) {
+    public WordleGame(WordleDictionary dictionary, WordleLogger logger) {
         this.dictionary = dictionary;
         this.gameRound = new WordleGameRound();
         this.answer = dictionary.getRandomWord();
@@ -53,72 +37,73 @@ public class WordleGame {
     }
 
     private void handleGuess(String userInout) {
-        logger.log("Попытка игрока: " +userInout);
-try {
-    String userAnswer = userInout.toLowerCase().replace("ё", "е");
-    validateGuess(userAnswer);
+        logger.log("Попытка игрока: " + userInout);
+        try {
+            String userAnswer = userInout.toLowerCase().replace("ё", "е");
+            validateGuess(userAnswer);
 
-    String hint = getHint(userInout);
-    gameRound.addAttempt(userAnswer, hint);
+            String hint = getHint(userInout);
+            gameRound.addAttempt(userAnswer, hint);
 
-    logger.log("Результат попытки: "+hint+" для слова: "+userAnswer);
-    System.out.println("Результат: " + hint);
+            logger.log("Результат попытки: " + hint + " для слова: " + userAnswer);
+            System.out.println("Результат: " + hint);
 
-    if (userAnswer.equals(answer)) {
-        gameRound.markAsWon();
-        logger.log("Игрок угадал слово");
-    }
-}catch (InvalidGuessException| WordNotFoundInDictionary e){
-    System.out.println("Ошибка: "+ e.getMessage());
-}catch (IllegalArgumentException | IllegalStateException e){
-    System.out.println("Ошибка игры: "+ e.getMessage());
-}
-    }
-
-    private void showProgress(){
-        System.out.println("Попыток использовано: "+ gameRound.getSteps());
-        System.out.println("Попыток осталось: "+ gameRound.getStepsLeft());
+            if (userAnswer.equals(answer)) {
+                gameRound.markAsWon();
+                logger.log("Игрок угадал слово");
+            }
+        } catch (InvalidGuessException | WordNotFoundInDictionary e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("Ошибка игры: " + e.getMessage());
+        }
     }
 
-    private void showGameResult(){
-        if (gameRound.getStatusGame()==StatusGame.WON){
+    private void showProgress() {
+        System.out.println("Попыток использовано: " + gameRound.getSteps());
+        System.out.println("Попыток осталось: " + gameRound.getStepsLeft());
+    }
+
+    private void showGameResult() {
+        if (gameRound.getStatusGame() == StatusGame.WON) {
             System.out.println("Вы угадали слово!");
-        }else{
-            if (gameRound.getStatusGame() == StatusGame.IN_PROGRESS){
+        } else {
+            if (gameRound.getStatusGame() == StatusGame.IN_PROGRESS) {
                 gameRound.markAsLost();
             }
             System.out.println("Игра закончена. Загаданное слово " + answer + '.');
         }
     }
 
-    private String  getSuggestion(){
+    private String getSuggestion() {
 
-        if(gameRound.getAttempts().isEmpty()){
+        if (gameRound.getAttempts().isEmpty()) {
             return dictionary.getRandomWord();
         }
         WordleGameConstraints constraints = new WordleGameConstraints();
         List<String> attempts = gameRound.getAttempts();
         List<String> hints = gameRound.getHints();
 
-        for (int i = 0; i< attempts.size();i++){
-            constraints.addAttempt(attempts.get(i),hints.get(i));
+        for (int i = 0; i < attempts.size(); i++) {
+            constraints.addAttempt(attempts.get(i), hints.get(i));
         }
 
         Set<String> triedWords = new HashSet<>(gameRound.getAttempts());
-        String suggestion = dictionary.findWord(constraints,triedWords);
+        String suggestion = dictionary.findWord(constraints, triedWords);
 
-        if(suggestion!=null){
+        if (suggestion != null) {
             System.out.println(suggestion);
             return suggestion;
         }
-        return getRandomUntriedWord(triedWords);
+        String randomUntriedWord = getRandomUntriedWord(triedWords);
+        return randomUntriedWord;
     }
 
-    public void handleSuggestion(Scanner scanner){
+    public void handleSuggestion(Scanner scanner) {
         logger.log("Запрос подсказки");
         String suggestion = getSuggestion();
 
-        if (suggestion==null){
+        if (suggestion == null) {
             logger.log("Не удалось предложить подсказку");
             System.out.println("Не могу предложить подсказку");
             return;
@@ -128,27 +113,27 @@ try {
 
     }
 
-    private String getRandomUntriedWord(Set<String> triedWords){
+    private String getRandomUntriedWord(Set<String> triedWords) {
         List<String> allWords = dictionary.getAllWords();
         List<String> untriedWords = new ArrayList<>();
 
-        for(String word: allWords){
-            if(!triedWords.contains(word)){
+        for (String word : allWords) {
+            if (!triedWords.contains(word)) {
                 untriedWords.add(word);
             }
         }
-        if (untriedWords.isEmpty()){
+        if (untriedWords.isEmpty()) {
             return dictionary.getRandomWord();
         }
         Random random = new Random();
         return untriedWords.get(random.nextInt(untriedWords.size()));
     }
 
-    private void validateGuess(String userAnswer){
-        if(userAnswer.length() !=5){
+    private void validateGuess(String userAnswer) {
+        if (userAnswer.length() != 5) {
             throw new InvalidGuessException("Слово должно содержать 5 букв");
         }
-        if (!dictionary.contains(userAnswer)){
+        if (!dictionary.contains(userAnswer)) {
             throw new WordNotFoundInDictionary("Слова нет в словаре");
         }
     }
@@ -163,25 +148,22 @@ try {
             }
         }
         for (int i = 0; i < 5; i++) {
-            if(result[i]=='+'){
+            if (result[i] == '+') {
                 continue;
             }
             boolean found = false;
-            for (int j = 0; j < 5; j++){
-                if(answerChars[j]!='_' && userAnswer.charAt(i)==answerChars[j]){
+            for (int j = 0; j < 5; j++) {
+                if (answerChars[j] != '_' && userAnswer.charAt(i) == answerChars[j]) {
                     result[i] = '^';
                     answerChars[j] = '_';
                     found = true;
                     break;
                 }
             }
-            if (!found){
+            if (!found) {
                 result[i] = '-';
             }
         }
         return new String(result);
     }
-
-
-
 }

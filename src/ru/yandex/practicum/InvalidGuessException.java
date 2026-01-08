@@ -5,3 +5,4 @@ public class InvalidGuessException extends RuntimeException {
         super(message);
     }
 }
+

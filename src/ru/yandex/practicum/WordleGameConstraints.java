@@ -65,24 +65,23 @@ public class WordleGameConstraints {
             }
         }
         for (Character letter : absentLetters) {
-            for (int i = 0; i < 5; i++){
-                if(word.charAt(i) == letter){
+            for (int i = 0; i < 5; i++) {
+                if (word.charAt(i) == letter) {
                     return false;
                 }
             }
         }
-        for (Map.Entry<Character,Set<Integer>> entry: forbiddenPositions.entrySet()){
-            char letter = entry.getKey();;
+        for (Map.Entry<Character, Set<Integer>> entry : forbiddenPositions.entrySet()) {
+            char letter = entry.getKey();
+            ;
             Set<Integer> forbidden = entry.getValue();
 
-            for(int i = 0; i<5;i++){
-                if(word.charAt(i) == letter && forbidden.contains(i)){
+            for (int i = 0; i < 5; i++) {
+                if (word.charAt(i) == letter && forbidden.contains(i)) {
                     return false;
                 }
             }
         }
         return true;
     }
-
-
 }

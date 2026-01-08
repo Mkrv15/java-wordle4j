@@ -8,12 +8,12 @@ public class WordleGameConstraintsTest {
     private WordleGameConstraints constraints;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         constraints = new WordleGameConstraints();
     }
 
     @Test
-    void testAddAttemptWithAllCorrect(){
+    void testAddAttemptWithAllCorrect() {
         constraints.addAttempt("столы", "+++++");
 
         Assertions.assertTrue(constraints.matches("столы"));
@@ -21,8 +21,9 @@ public class WordleGameConstraintsTest {
         Assertions.assertFalse(constraints.matches("ствол"));
         Assertions.assertFalse(constraints.matches("слоны"));
     }
+
     @Test
-    void testAddAttemptWithAllAbsent(){
+    void testAddAttemptWithAllAbsent() {
         constraints.addAttempt("столы", "-----");
 
         Assertions.assertFalse(constraints.matches("столы"));
@@ -30,8 +31,9 @@ public class WordleGameConstraintsTest {
         Assertions.assertFalse(constraints.matches("ствол"));
         Assertions.assertFalse(constraints.matches("слоны"));
     }
+
     @Test
-    void testAddAttemptWithFirstLetterCorrect(){
+    void testAddAttemptWithFirstLetterCorrect() {
         constraints.addAttempt("столы", "^----");
 
         Assertions.assertFalse(constraints.matches("столы"));
