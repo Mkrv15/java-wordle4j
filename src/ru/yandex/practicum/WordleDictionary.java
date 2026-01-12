@@ -7,6 +7,7 @@ public class WordleDictionary {
     private final List<String> words;
     private final WordleLogger logger;
 
+
     public WordleDictionary(List<String> wordsInput, WordleLogger logger) {
         this.logger = logger;
         words = selectWordsForGame(wordsInput);
@@ -19,7 +20,7 @@ public class WordleDictionary {
         }
         List<String> newWords = new ArrayList<>();
         for (String word : inputWords) {
-            if (word.length() == 5) {
+            if (word.length() == WordleGame.WORD_LENGTH) {
                 newWords.add(word.toLowerCase().replace('ё', 'е'));
             }
         }

@@ -15,11 +15,11 @@ public class WordleDictionaryLoader {
     WordleDictionary loadWordleDictionary(String fileName) {
         logger.log("начало загрузки словаря из файла: " + fileName);
         List<String> words = new ArrayList<>();
+        String line;
         try (BufferedReader br = new BufferedReader(new FileReader(fileName, StandardCharsets.UTF_8))) {
-            while (br.ready()) {
-                String word = br.readLine();
-                if (!(word.isBlank())) {
-                    words.add(word);
+            while ((line = br.readLine())!=null) {
+                if (!(line.isBlank())) {
+                    words.add(line);
                 }
             }
             logger.log("Непустых слов: " + words.size());

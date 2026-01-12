@@ -8,6 +8,7 @@ public class WordleGame {
     private final WordleDictionary dictionary;
     private final WordleGameRound gameRound;
     private final WordleLogger logger;
+    public static final int WORD_LENGTH = 5;
 
     public WordleGame(WordleDictionary dictionary, WordleLogger logger) {
         this.dictionary = dictionary;
@@ -130,8 +131,14 @@ public class WordleGame {
     }
 
     private void validateGuess(String userAnswer) {
-        if (userAnswer.length() != 5) {
+        if (userAnswer.length() != WORD_LENGTH) {
             throw new InvalidGuessException("Слово должно содержать 5 букв");
+        }else {
+            for (int i = 0; i <WORD_LENGTH ; i++) {
+                if (Character.isLetter(userAnswer.charAt(i))){
+                    throw new InvalidGuessException("Слово должно состоять из букв букв");
+                }
+            }
         }
         if (!dictionary.contains(userAnswer)) {
             throw new WordNotFoundInDictionary("Слова нет в словаре");
@@ -140,19 +147,19 @@ public class WordleGame {
 
     private String getHint(String userAnswer) {
         char[] answerChars = answer.toCharArray();
-        char[] result = new char[5];
-        for (int i = 0; i < 5; i++) {
+        char[] result = new char[WORD_LENGTH];
+        for (int i = 0; i < WORD_LENGTH; i++) {
             if (userAnswer.charAt(i) == answerChars[i]) {
                 result[i] = '+';
                 answerChars[i] = '_';
             }
         }
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < WORD_LENGTH; i++) {
             if (result[i] == '+') {
                 continue;
             }
             boolean found = false;
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < WORD_LENGTH; j++) {
                 if (answerChars[j] != '_' && userAnswer.charAt(i) == answerChars[j]) {
                     result[i] = '^';
                     answerChars[j] = '_';

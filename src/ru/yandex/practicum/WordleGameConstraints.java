@@ -13,7 +13,7 @@ public class WordleGameConstraints {
 
     public void addAttempt(String word, String hint) {
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < WordleGame.WORD_LENGTH; i++) {
             char letter = word.charAt(i);
             char status = hint.charAt(i);
 
@@ -45,7 +45,7 @@ public class WordleGameConstraints {
     }
 
     public boolean matches(String word) {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < WordleGame.WORD_LENGTH; i++) {
             if (knownPositions[i] != null) {
                 if (word.charAt(i) != knownPositions[i]) {
                     return false;
@@ -54,7 +54,7 @@ public class WordleGameConstraints {
         }
         for (Character letter : presentLetters) {
             boolean found = false;
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < WordleGame.WORD_LENGTH; i++) {
                 if (word.charAt(i) == letter) {
                     found = true;
                     break;
@@ -65,7 +65,7 @@ public class WordleGameConstraints {
             }
         }
         for (Character letter : absentLetters) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < WordleGame.WORD_LENGTH; i++) {
                 if (word.charAt(i) == letter) {
                     return false;
                 }
@@ -73,10 +73,9 @@ public class WordleGameConstraints {
         }
         for (Map.Entry<Character, Set<Integer>> entry : forbiddenPositions.entrySet()) {
             char letter = entry.getKey();
-            ;
             Set<Integer> forbidden = entry.getValue();
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < WordleGame.WORD_LENGTH; i++) {
                 if (word.charAt(i) == letter && forbidden.contains(i)) {
                     return false;
                 }
