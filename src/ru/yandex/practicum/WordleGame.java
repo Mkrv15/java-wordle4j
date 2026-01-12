@@ -133,9 +133,9 @@ public class WordleGame {
     private void validateGuess(String userAnswer) {
         if (userAnswer.length() != WORD_LENGTH) {
             throw new InvalidGuessException("Слово должно содержать 5 букв");
-        }else {
-            for (int i = 0; i <WORD_LENGTH ; i++) {
-                if (Character.isLetter(userAnswer.charAt(i))){
+        } else {
+            for (int i = 0; i < WORD_LENGTH; i++) {
+                if (Character.isLetter(userAnswer.charAt(i))) {
                     throw new InvalidGuessException("Слово должно состоять из букв букв");
                 }
             }
